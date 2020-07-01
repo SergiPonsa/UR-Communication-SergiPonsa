@@ -12,6 +12,8 @@ Functions:
 """
 import socket
 import time
+import traceback
+
 class URScript_Comands():
 
 	#Variables set when we create the object
@@ -26,6 +28,15 @@ class URScript_Comands():
 		self.URScript_sock.settimeout(2)# liberate the socket after 2 seconds if no data is recived or able to send
 
 	#//////////////////////////////////////////////////////////////////////////////#
+	def __enter__(self):
+		self.URScript_Connect()
+		return self
+
+	def __exit__(self, exc_type, exc_value, tb):
+		self.URScript_sock.close()
+		if exc_type is not None:
+			traceback.print_exception(exc_type, exc_value, tb)
+			return False
 	#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
 	#functions
 

@@ -37,6 +37,7 @@ ClearOperationalMode()
 """
 import socket
 import time
+import traceback
 
 class DashBoard_Communication():
 
@@ -52,8 +53,18 @@ class DashBoard_Communication():
 		self.DashBoard_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) #Sol_socket allows to read the socket options with getsockopt(), & SO_REUSEADDR means that a socket may bind, except when there is an active listening socket bound to the address
 		self.DashBoard_sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)#IPPROTO_TCP is a socket option that allows us to do modifications in our TCP protocol & TCP_NODELAY  This means that segments are always sent as soon as possible, even if there is only a small amount of data.
 		self.DashBoard_sock.settimeout(2)# liberate the socket after 2 seconds if no data is recived or able to send
+		#//////////////////////////////////////////////////////////////////////////////#
 
-	#//////////////////////////////////////////////////////////////////////////////#
+	def __enter__(self):
+		self.DashBoard_Connect()
+		return self
+
+	def __exit__(self, exc_type, exc_value, tb):
+		self.DashBoard_sock.close()
+		if exc_type is not None:
+			traceback.print_exception(exc_type, exc_value, tb)
+			return False
+
 
 	#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
 	#functions

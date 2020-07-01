@@ -26,6 +26,7 @@ Functions:
 import socket
 import time
 import sys
+import traceback
 
 import numpy as np
 import pandas as pd
@@ -73,9 +74,19 @@ class Modbus_Communication():
 		self.Modbus_Connected=False
 		self.Modbus_sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)# The socket use IPv4 protocol & Provides sequenced, reliable, two-way, connection-based byte streams..
 		self.Modbus_sock.settimeout(10)# liberate the socket after 2 seconds if no data is recived or able to send
+		#//////////////////////////////////////////////////////////////////////////////#
+
+	def __enter__(self):
+		self.Modbus_Connect()
+		return self
+
+	def __exit__(self, exc_type, exc_value, tb):
+		self.Modbus_sock.close()
+		if exc_type is not None:
+			traceback.print_exception(exc_type, exc_value, tb)
+			return False
 
 
-	#//////////////////////////////////////////////////////////////////////////////#
 
 	#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
 	#functions
